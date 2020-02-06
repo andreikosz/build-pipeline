@@ -4,4 +4,4 @@ ADD /java-vm-deploy /java-app
 WORKDIR /java-app
 ENTRYPOINT ["sh", "-c"]
 RUN chmod +x ./build/libs/spring-boot-app.jar
-CMD ["ls ."]
+RUN ls .
