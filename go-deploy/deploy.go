@@ -97,13 +97,13 @@ func main() {
 			Args:    	fetchClusterCredentialsArgs,
 		}
 
-		setupClusterConfigArgs :=[]string{"./build-pipeline/build-shell-files/cluster-setup.sh"}
-		setupClusterConfigStep := &cloudbuildpb.BuildStep{
-			Name:       "gcr.io/cloud-builders/kubectl",
-			Id:         "Setup cluster context",
-			Entrypoint: "/bin/sh",
-			Args:    	setupClusterConfigArgs,
-		}
+		// setupClusterConfigArgs :=[]string{"./build-pipeline/build-shell-files/cluster-setup.sh"}
+		// setupClusterConfigStep := &cloudbuildpb.BuildStep{
+		// 	Name:       "gcr.io/cloud-builders/kubectl",
+		// 	Id:         "Setup cluster context",
+		// 	Entrypoint: "/bin/sh",
+		// 	Args:    	setupClusterConfigArgs,
+		// }
 		env := []string{"CLOUDSDK_COMPUTE_ZONE=us-central1-a", "CLOUDSDK_CONTAINER_CLUSTER=my-cluster"}
 		deployAppStep = &cloudbuildpb.BuildStep{
 			Name:       "gcr.io/cloud-builders/kubectl",
@@ -112,7 +112,7 @@ func main() {
 			Env: 		env,
 			Args:    	deployAppArgs,
 		}
-		steps = append(steps, buildAndPushDockerImageStep, fetchClusterCredenitals, setupClusterConfigStep, deployAppStep)
+		steps = append(steps, buildAndPushDockerImageStep, fetchClusterCredentialsStep, deployAppStep)
 
 	}
 
