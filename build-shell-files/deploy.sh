@@ -16,7 +16,7 @@ elif [[ $1 = "1" ]];then
         fi
     else
         echo "Using default config yaml file"
-        if cd ../build-pipeline/default-build-files &&  kubectl config set-credentials my-cluster --username=admin --password=Andrei_Koszorus_1996 && kubectl get pods;then 
+        if cd ../build-pipeline/default-build-files && kubectl apply -f kubernetes.yaml;then 
             echo "App deployed on kubernetes cluster"
         else 
              ls . && echo "Cloud not deploy app on cluster" && exit 1
