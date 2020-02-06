@@ -1,0 +1,8 @@
+google-project-id = "terraform-265913"
+project-region = "us-central1"
+instance-name = "my-instance-2"
+instance-zone = "us-central1-a"
+instance-machine-type = "f1-micro"
+cluster-name = "my-cluster"
+cluster-username = "admin"
+cluster-password = "Andrei_Koszorus_1996"
