@@ -8,7 +8,7 @@ if cd java-vm-deploy && test -f Dockerfile; then
     fi
 else
     echo "Using default Dockerfile"
-    if  cd .. && docker build -f build-pipeline/default-build-files/Dockerfile -t gcr.io/terraform-265913/java-app:latest . && docker push gcr.io/terraform-265913/java-app:latest && docker run gcr.io/terraform-265913/java-app:latest ;then
+    if  cd .. && docker build -f build-pipeline/default-build-files/Dockerfile -t gcr.io/terraform-265913/java-app:latest . && docker push gcr.io/terraform-265913/java-app:latest ;then
         echo "Docker image pushed"
     else
         echo "Error at building docker image" && exit 1
