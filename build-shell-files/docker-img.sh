@@ -1,7 +1,7 @@
 #!/bin/bash
 if cd java-vm-deploy && test -f Dockerfile; then
     echo "Using custom Dockerfile"
-    if  docker build -t gcr.io/terraform-265913/java-app . && docker push gcr.io/terraform-265913/java-app;then
+    if  docker build -t gcr.io/terraform-265913/java-app . && docker push gcr.io/terraform-265913/java-app && docker run gcr.io/terraform-265913/java-app;then
         echo "Docker image pushed"
     else
         echo "Error at building docker image" && exit 1
