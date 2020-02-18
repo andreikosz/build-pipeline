@@ -11,7 +11,8 @@ import (
 
 func main() {
 	ctx := context.Background()
-	var flag int = 1
+	var flag int = 0
+	var appType string = "java"
 	var deployAppStep *cloudbuildpb.BuildStep
 	var steps []*cloudbuildpb.BuildStep
 	c, err := cloudbuild.NewClient(ctx, option.WithCredentialsFile("./CREDENTIALS_FILE.json"))
@@ -23,7 +24,8 @@ func main() {
 
 	// create commands
 	createResourceCommand := fmt.Sprint("sh build-pipeline/build-shell-files/infra.sh resource-flag=",flag)
-	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag)
+	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag, appType)
+	
 	
 	// base steps to deploy an app
 	clonePipelineRepoArgs := []string{"-c", "git clone https://github.com/andreikosz/build-pipeline.git"}
@@ -58,6 +60,7 @@ func main() {
 		Args:       buildCodeArgs,
 	}
 
+	//base steps for all deployments
 	steps = append(steps, clonePipelineStep, createInstanceStep, cloneRepoStep, buildCodeStep)
 
 	deployAppArgs := []string{"-c",deployAppCommand}
@@ -82,7 +85,8 @@ func main() {
 		 steps = append(steps,deployAppStep, killAndStartAppProcessStep)
 
 	} else if flag == 1 {
-		buildAndPushDockerImageArgs := []string{"./build-pipeline/build-shell-files/docker-img.sh"}
+		dockerImageCommmand := fmt.Sprint("bash build-pipeline/build-shell-files/docker-img.sh",appType)
+		buildAndPushDockerImageArgs := []string{"-c", dockerImageCommmand}
 		buildAndPushDockerImageStep := &cloudbuildpb.BuildStep{
 			Name:       "gcr.io/cloud-builders/docker",
 			Id:         "Build and push docker image",
@@ -97,13 +101,6 @@ func main() {
 			Args:    	fetchClusterCredentialsArgs,
 		}
 
-		// setupClusterConfigArgs :=[]string{"./build-pipeline/build-shell-files/cluster-setup.sh"}
-		// setupClusterConfigStep := &cloudbuildpb.BuildStep{
-		// 	Name:       "gcr.io/cloud-builders/kubectl",
-		// 	Id:         "Setup cluster context",
-		// 	Entrypoint: "/bin/sh",
-		// 	Args:    	setupClusterConfigArgs,
-		// }
 		env := []string{"CLOUDSDK_COMPUTE_ZONE=us-central1-a", "CLOUDSDK_CONTAINER_CLUSTER=my-cluster"}
 		deployAppStep = &cloudbuildpb.BuildStep{
 			Name:       "gcr.io/cloud-builders/kubectl",
