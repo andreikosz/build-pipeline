@@ -22,11 +22,6 @@ func main() {
 		fmt.Println("Error occured")
 	}
 
-	// create commands
-	createResourceCommand := fmt.Sprint("sh build-pipeline/build-shell-files/infra.sh resource-flag=",flag)
-	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag, appType)
-	
-	
 	// base steps to deploy an app
 	clonePipelineRepoArgs := []string{"-c", "git clone https://github.com/andreikosz/build-pipeline.git"}
 	clonePipelineStep := &cloudbuildpb.BuildStep{
@@ -36,6 +31,7 @@ func main() {
 		Args:       clonePipelineRepoArgs,
 	}
 
+	createResourceCommand := fmt.Sprint("sh build-pipeline/build-shell-files/infra.sh resource-flag=",flag)
 	runInstanceArgs := []string{"-c", createResourceCommand}
 	createInstanceStep := &cloudbuildpb.BuildStep{
 		Name: "gcr.io/cloud-builders/docker@sha256:255467d8ede72b2af188d035ac4629ac6d0c0fe14dbd835f13cacd15da0fa4a1",
@@ -52,7 +48,8 @@ func main() {
 		Args:       cloneRepoArgs,
 	}
 
-	buildCodeArgs := []string{"./build-pipeline/build-shell-files/build.sh"}
+	buildCodeCommand := fmt.Sprint("bash build-pipeline/build-shell-files/build.sh ",appType)
+	buildCodeArgs := []string{"-c",buildCodeCommand}
 	buildCodeStep := &cloudbuildpb.BuildStep{
 		Name:       "gcr.io/cloud-builders/gradle@sha256:7e84b7225fe6c43457696639d0fd93e50291ef9262982c08b8d2f14e79ca2862",
 		Id:         "Build code",
@@ -63,6 +60,7 @@ func main() {
 	//base steps for all deployments
 	steps = append(steps, clonePipelineStep, createInstanceStep, cloneRepoStep, buildCodeStep)
 
+	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag, appType)
 	deployAppArgs := []string{"-c",deployAppCommand}
 	
 
@@ -74,7 +72,8 @@ func main() {
 				Entrypoint: "/bin/sh",
 				Args:    	deployAppArgs,
 		}
-		killAndStartAppProcessArgs := []string{"./build-pipeline/build-shell-files/run.sh"}
+		killAndStartAppCommand := fmt.Sprint("bash build-pipeline/build-shell-files/run.sh ",appType)
+		killAndStartAppProcessArgs := []string{"-c", killAndStartAppCommand }
 		killAndStartAppProcessStep := &cloudbuildpb.BuildStep{
 			Name:       "gcr.io/cloud-builders/gcloud",
 			Id:         "Kill and start app process",
