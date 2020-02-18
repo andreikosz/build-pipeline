@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [[ $1 = "0" ]];then
     if [[ $2 = "java" ]];then
         if ! (cd app-folder && gcloud compute scp ./build/libs/spring-boot-app.jar andreikosz_96@my-instance-2: --zone=us-central1-a); then
@@ -7,7 +6,7 @@ if [[ $1 = "0" ]];then
         else
              echo "Files deployed to VM instance"
         fi
-    elif [[ $2 = "python" ]]
+    elif [[ $2 = "python" ]];then
         if ! (cd app-folder && gcloud compute scp ./backend.py andreikosz_96@my-instance-2: --zone=us-central1-a); then
             echo "Could not copy file to the VM instance " && exit 1
         else
