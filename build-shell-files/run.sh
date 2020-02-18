@@ -1,5 +1,5 @@
 #!/bin/bash
-if ! (fuser -k 8080/tcp);then
+if ! (gcloud compute ssh andreikosz_96@my-instance-2 --zone=us-central1-a --command="fuser -k 8080/tcp");then
     echo "Could not kill app"
 else
     echo "App succesfully killed"

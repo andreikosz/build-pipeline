@@ -60,7 +60,7 @@ func main() {
 	//base steps for all deployments
 	steps = append(steps, clonePipelineStep, createInstanceStep, cloneRepoStep, buildCodeStep)
 
-	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag, appType)
+	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag, " ",appType)
 	deployAppArgs := []string{"-c",deployAppCommand}
 	
 
