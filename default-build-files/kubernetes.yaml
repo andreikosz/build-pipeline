@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gradle-spring-boot
+  name: backend-app-deployment
   labels:
-    app: gradle-spring-boot
+    app: backend-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spring-boot
+      app: backend-app
   template:
     metadata:
       labels:
-        app: spring-boot
+        app: backend-app
     spec:
       containers:
-      - name: spring-boot
-        image: gcr.io/terraform-265913/java-app:latest
+      - name: backend-app
+        image: gcr.io/terraform-265913/app:latest
         ports:
         - containerPort: 8080
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: spring-boot
+  name: backend-service
 spec:
   selector:
-    app: spring-boot
+    app: backend-app
   ports:
   - protocol: TCP
     port: 80
