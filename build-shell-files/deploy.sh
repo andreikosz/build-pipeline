@@ -18,6 +18,7 @@ elif [[ $1 = "1" ]];then
         echo "Using custom config yaml file "
         if cat kubernetes.yaml;then
             echo "this is kubernetes.yaml"
+        fi
         if  kubectl apply -f kubernetes.yaml;then 
             echo "App deployed on kubernetes cluster"
         else 
