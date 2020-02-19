@@ -6,7 +6,7 @@ if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
     DOCKER_IMG_FULL_NAME="$DOCKER_IMG_BASE$NEW_UUID"
     if  docker build -t $DOCKER_IMG_FULL_NAME . && docker push $DOCKER_IMG_FULL_NAME;then
         echo "Docker image pushed"
-        if sed 's/DOCKER_IMG/${DOCKER_IMG_FULL_NAME}/g' > kubernetes.yaml;then
+        if sed 's/DOCKER_IMG/${DOCKER_IMG_FULL_NAME}' > kubernetes.yaml;then
             echo "Generate kubernetes.yaml file"
         else
             echo "Failed to generate yaml file" && exit 1
