@@ -16,6 +16,8 @@ if [[ $1 = "0" ]];then
 elif [[ $1 = "1" ]];then
     if cd app-folder && test -f kubernetes.yaml; then
         echo "Using custom config yaml file "
+        if cat kubernetes.yaml;then
+            echo "this is kubernetes.yaml"
         if  kubectl apply -f kubernetes.yaml;then 
             echo "App deployed on kubernetes cluster"
         else 
