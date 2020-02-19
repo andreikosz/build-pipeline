@@ -1,8 +1,16 @@
 #!/bin/bash
-if cd app-folder && test -f Dockerfile; then
-    echo "Using custom Dockerfile"
-    if  docker build -t gcr.io/terraform-265913/app:latest . && docker push gcr.io/terraform-265913/app:latest;then
+if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
+    echo "Using custom build"
+    DOCKER_IMG_BASE = "gcr.io/terraform-265913/app:"
+    NEW_UUID=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+    DOCKER_IMG_FULL_NAME = "$DOCKER_IMG_BASE$NEW_UUID"
+    if  docker build -t DOCKER_IMG_FULL_NAME . && docker push DOCKER_IMG_FULL_NAME;then
         echo "Docker image pushed"
+        if sed "s/DOCKER_IMG/$DOCKER_IMG_FULL_NAME/g" > kubernetes.yaml
+            echo "Generate kubernetes.yaml file"
+        else
+            echo "Failed to generate yaml file" && exit 1
+        fi
     else
         echo "Error at building docker image" && exit 1
     fi
