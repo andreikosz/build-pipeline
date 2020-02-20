@@ -13,8 +13,9 @@ import (
 func main() {
 	ctx := context.Background()
 	var flag int = 1
-	var appType string = "java"
+	var appType string = "python"
 	var deployAppStep *cloudbuildpb.BuildStep
+	var buildCodeStep *cloudbuildpb.BuildStep
 	var steps []*cloudbuildpb.BuildStep
 	c, err := cloudbuild.NewClient(ctx, option.WithCredentialsFile("./CREDENTIALS_FILE.json"))
 
@@ -51,22 +52,22 @@ func main() {
 
 	buildCodeCommand := fmt.Sprint("bash build-pipeline/build-shell-files/build.sh ",appType)
 	buildCodeArgs := []string{"-c",buildCodeCommand}
-	buildCodeStep := &cloudbuildpb.BuildStep{
-		Name:       "gcr.io/cloud-builders/gradle@sha256:7e84b7225fe6c43457696639d0fd93e50291ef9262982c08b8d2f14e79ca2862",
-		Id:         "Build code",
-		Entrypoint: "/bin/sh",
-		Args:       buildCodeArgs,
-	}
-
-	//base steps for all deployments
-	steps = append(steps, clonePipelineStep, createInstanceStep, cloneRepoStep, buildCodeStep)
 
 	deployAppCommand :=fmt.Sprint("bash build-pipeline/build-shell-files/deploy.sh ",flag, " ",appType)
 	deployAppArgs := []string{"-c",deployAppCommand}
-	
+
+	//base steps for all deployments
+	steps = append(steps, clonePipelineStep, createInstanceStep, cloneRepoStep)
 
 	// steps depending on the flag
 	if flag == 0 {
+		
+		buildCodeStep = &cloudbuildpb.BuildStep{
+			Name:       "gcr.io/cloud-builders/gradle@sha256:7e84b7225fe6c43457696639d0fd93e50291ef9262982c08b8d2f14e79ca2862",
+			Id:         "Build code",
+			Entrypoint: "/bin/sh",
+			Args:       buildCodeArgs,
+		}
 		deployAppStep = &cloudbuildpb.BuildStep{
 				Name:       "gcr.io/cloud-builders/gcloud",
 				Id:         "Deploy app",
@@ -82,9 +83,15 @@ func main() {
 			Args:       killAndStartAppProcessArgs,
 		}
 
-		 steps = append(steps,deployAppStep, killAndStartAppProcessStep)
+		 steps = append(steps,buildCodeStep, deployAppStep, killAndStartAppProcessStep)
 
 	} else if flag == 1 {
+		buildCodeStep = &cloudbuildpb.BuildStep{
+			Name:       "gcr.io/cloud-builders/gradle@sha256:7e84b7225fe6c43457696639d0fd93e50291ef9262982c08b8d2f14e79ca2862",
+			Id:         "Build code",
+			Entrypoint: "/bin/sh",
+			Args:       buildCodeArgs,
+		}
 		dockerImageCommmand := fmt.Sprint("bash build-pipeline/build-shell-files/docker-img.sh ",appType)
 		buildAndPushDockerImageArgs := []string{"-c", dockerImageCommmand}
 		buildAndPushDockerImageStep := &cloudbuildpb.BuildStep{
@@ -109,7 +116,7 @@ func main() {
 			Env: 		env,
 			Args:    	deployAppArgs,
 		}
-		steps = append(steps, buildAndPushDockerImageStep, fetchClusterCredentialsStep, deployAppStep)
+		steps = append(steps, buildCodeStep, buildAndPushDockerImageStep, fetchClusterCredentialsStep, deployAppStep)
 
 	}
 
