@@ -7,11 +7,12 @@ import (
 	cloudbuild "cloud.google.com/go/cloudbuild/apiv1"
 	"google.golang.org/api/option"
 	cloudbuildpb "google.golang.org/genproto/googleapis/devtools/cloudbuild/v1"
+	time "github.com/golang/protobuf/ptypes/duration"
 )
 
 func main() {
 	ctx := context.Background()
-	var flag int = 0
+	var flag int = 1
 	var appType string = "java"
 	var deployAppStep *cloudbuildpb.BuildStep
 	var steps []*cloudbuildpb.BuildStep
@@ -84,7 +85,7 @@ func main() {
 		 steps = append(steps,deployAppStep, killAndStartAppProcessStep)
 
 	} else if flag == 1 {
-		dockerImageCommmand := fmt.Sprint("bash build-pipeline/build-shell-files/docker-img.sh",appType)
+		dockerImageCommmand := fmt.Sprint("bash build-pipeline/build-shell-files/docker-img.sh ",appType)
 		buildAndPushDockerImageArgs := []string{"-c", dockerImageCommmand}
 		buildAndPushDockerImageStep := &cloudbuildpb.BuildStep{
 			Name:       "gcr.io/cloud-builders/docker",
@@ -112,8 +113,13 @@ func main() {
 
 	}
 
+	duration := &time.Duration{
+		Seconds: 1200,
+	}
+
 	build := &cloudbuildpb.Build{
 		Steps: steps,
+		Timeout: duration,
 	}
 	buildReq := &cloudbuildpb.CreateBuildRequest{
 
