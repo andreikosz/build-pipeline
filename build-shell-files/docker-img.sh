@@ -1,5 +1,5 @@
 #!/bin/bash
-if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
+if  test -f app-folder/Dockerfile && test -f app-folder/kubernetes.yaml.tpl && cd app-folder; then
     echo "Using custom build"
     DOCKER_IMG_BASE="gcr.io/terraform-265913/app:"
     NEW_UUID=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 5)
@@ -18,8 +18,8 @@ if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
 else
     echo "Using default Dockerfile"
     if [[ $1 = "java8" ]]; then
-        ls . && cd .. && source build-pipeline/build-shell-files/docker-shells/java8-docker.sh
+        source build-pipeline/build-shell-files/docker-shells/java8-docker.sh
     elif [[ $1 = "python3" ]];then
-        ls . && cd .. source  build-pipeline/build-shell-files/docker-shells/python3-docker.sh
+        source  build-pipeline/build-shell-files/docker-shells/python3-docker.sh
     fi
 fi
