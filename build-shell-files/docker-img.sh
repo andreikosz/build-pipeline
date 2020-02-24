@@ -18,8 +18,8 @@ if  test -f app-folder/Dockerfile && test -f app-folder/kubernetes.yaml.tpl && c
 else
     echo "Using default Dockerfile"
     if [[ $1 = "java8" ]]; then
-        source build-pipeline/build-shell-files/docker-shells/java8-docker.sh
+        source build-shell-files/docker-shells/java8-docker.sh
     elif [[ $1 = "python3" ]];then
-        source  build-pipeline/build-shell-files/docker-shells/python3-docker.sh
+        source build-shell-files/docker-shells/python3-docker.sh
     fi
 fi
