@@ -1,14 +1,6 @@
 #!/bin/bash
 if [[ $1 = "java" ]];then
-    if ! (cd app-folder && gradle test bootJar && mv ./build/libs/*.jar ./build/libs/spring-boot-app.jar) ; then
-        echo "Could not build code" && exit 1
-    else
-        echo "Code successfully build"
-    fi
+    source build-pipeline/build-shell-files/java-shells/build-java8.sh
 elif [[ $1 = "python" ]];then
-    if ! (cd app-folder && mv ./*.py ./backend.py) ; then
-        echo "Could not move python file" && exit 1
-    else
-        echo "Python file successfuly added"
-    fi
+    source build-pipeline/build-shell-files/python-shells/build-python3.sh
 fi

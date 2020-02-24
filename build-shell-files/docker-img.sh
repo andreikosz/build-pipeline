@@ -17,17 +17,9 @@ if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
     fi
 else
     echo "Using default Dockerfile"
-    if [[ $1 = "java" ]]; then
-        if  cd .. && docker build -f build-pipeline/default-build-files/java/Dockerfile -t gcr.io/terraform-265913/app:latest . && docker push gcr.io/terraform-265913/app:latest;then
-        echo "Docker image pushed"
-        else
-         echo "Error at building docker image" && exit 1
-        fi
-    elif [[ $1 = "python" ]];then
-        if  cd .. && docker build -f build-pipeline/default-build-files/python/Dockerfile -t gcr.io/terraform-265913/app:latest . && docker push gcr.io/terraform-265913/app:latest;then
-        echo "Docker image pushed"
-        else
-         echo "Error at building docker image" && exit 1
-        fi
+    if [[ $1 = "java8" ]]; then
+        source build-pipeline/build-shell-files/docker-shells/java8-docker.sh
+    elif [[ $1 = "python3" ]];then
+        source build-pipeline/build-shell-files/docker-shells/python3-docker.sh
     fi
 fi

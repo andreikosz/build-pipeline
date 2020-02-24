@@ -1,14 +1,6 @@
 #!/bin/bash
-if [[ $1 = "java" ]];then
-    if ! git clone https://github.com/andreikosz/java-vm-deploy.git app-folder;then
-         echo "Could not clone code repo" && exit 1
-    else
-        echo "Code repo cloned"
-    fi
-elif [[ $1 = "python" ]];then
-    if ! git clone https://github.com/andreikosz/python-web-app.git app-folder;then
-         echo "Could not clone code repo" && exit 1
-    else
-        echo "Code repo cloned"
-    fi
+if [[ $1 = "java8" ]];then
+   source build-pipeline/build-shell-files/checkout-code-shells/checkout-java8-app.sh
+elif [[ $1 = "python3" ]];then
+    source build-pipeline/build-shell-files/docker-shells/checkout-python3-app.sh
 fi
