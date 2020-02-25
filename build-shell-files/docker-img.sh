@@ -20,6 +20,6 @@ else
     if [[ $1 = "java8" ]]; then
         cd .. && source build-pipeline/build-shell-files/docker-shells/java8-docker.sh
     elif [[ $1 = "python3" ]];then
-        CD .. && source build-pipeline/build-shell-files/docker-shells/python3-docker.sh
+        cd .. && source build-pipeline/build-shell-files/docker-shells/python3-docker.sh
     fi
 fi
