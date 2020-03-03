@@ -30,5 +30,5 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 8080
+    targetPort: APP_PORT
   type: LoadBalancer
