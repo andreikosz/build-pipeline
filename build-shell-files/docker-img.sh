@@ -7,7 +7,7 @@ if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
 
     if  docker build -t $DOCKER_IMG_FULL_NAME . && docker push $DOCKER_IMG_FULL_NAME;then
         echo "Docker image pushed"
-        if sed -e "s%DOCKER_IMG%$DOCKER_IMG_FULL_NAME%g" kubernetes.yaml.tpl > kubernetes.yaml;then
+        if sed -e "s%DOCKER_IMG%$DOCKER_IMG_FULL_NAME%g" -e "s%APP_PORT%$2%g" kubernetes.yaml.tpl > kubernetes.yaml;then
             echo "Generate kubernetes.yaml file"
         else
             echo "Failed to generate yaml file" && exit 1
@@ -18,8 +18,8 @@ if cd app-folder && test -f Dockerfile && test -f kubernetes.yaml.tpl; then
 else
     echo "Using default Dockerfile"
     if [[ $1 = "java8" ]]; then
-        cd .. && ls . && source ./build-pipeline/build-shell-files/docker-shells/java8-docker.sh
+        cd .. && ls . && source /build-pipeline/build-shell-files/docker-shells/java8-docker.sh
     elif [[ $1 = "python3" ]];then
-        cd .. && ls . && source ./build-pipeline/build-shell-files/docker-shells/python3-docker.sh
+        cd .. && ls . && source /build-pipeline/build-shell-files/docker-shells/python3-docker.sh
     fi
 fi
