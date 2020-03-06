@@ -18,7 +18,7 @@ spec:
       - name: backend-app
         image: gcr.io/terraform-265913/app:latest
         ports:
-        - containerPort: APP_PORT
+        - containerPort: 8080
 ---
 kind: Service
 apiVersion: v1
